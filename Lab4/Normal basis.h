@@ -163,21 +163,21 @@ int* mod_generator(int* vector, int* generator, int* result, int size_first, int
 	return result;
 }
 
-int* multiplicative_vector(int* vector1, int* vector2, int* result, int size)
+int* MulVectors(int* vector1, int* vector2, int* result, int size)
 {
 	int p = 2 * size + 1;
 	int** matrix = new int* [size];
 	for (int i = 0; i < size; i++)
 		matrix[i] = new int[size];
 
-	for (int i = 0; i < size; i++) // ââîä ýëåìåíòîâ ìàòðèöû Ëÿìáäà0
+	for (int i = 0; i < size; i++) // Ð²Ð²Ð¾Ð´ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹ Ð›ÑÐ¼Ð±Ð´Ð°0
 	{
 		for (int j = 0; j < size; j++)
 		{
 			matrix[i][j] = 0;
 		}
 	}
-	for (int i = 0; i < size; i++) // ââîä ýëåìåíòîâ ìàòðèöû Ëÿìáäà0
+	for (int i = 0; i < size; i++) // Ð²Ð²Ð¾Ð´ ÑÐ»ÐµÐ¼ÐµÐ½Ñ‚Ð¾Ð² Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñ‹ Ð›ÑÐ¼Ð±Ð´Ð°0
 	{
 		for (int j = 0; j < size; j++)
 		{
@@ -220,7 +220,7 @@ int* multiplicative_vector(int* vector1, int* vector2, int* result, int size)
 			result1[i] = (result1[i] + result1[i] * matrix[i][j]) % 2;
 		}
 	}
-	cout << "Ðåçóëüòàò óìíîæåíèÿ âåêòîðà 1 íà ìàòðèöó Ëÿìáëà0:" << endl;
+	cout << "Ð ÐµÐ·ÑƒÐ»ÑŒÑ‚Ð°Ñ‚ ÑƒÐ¼Ð½Ð¾Ð¶ÐµÐ½Ð¸Ñ Ð²ÐµÐºÑ‚Ð¾Ñ€Ð° 1 Ð½Ð° Ð¼Ð°Ñ‚Ñ€Ð¸Ñ†Ñƒ Ð›ÑÐ¼Ð±Ð»Ð°0:" << endl;
 	for (int i = 0; i < size; i++)
 	{
 		cout << result1[i] << " ";
@@ -263,7 +263,7 @@ int* elevation_to_huge_degree(int* vector, int* degree, int* generator, int* res
 
 		if (degree[i] == 1)
 		{
-			multiplicative_vector(_result, vector, result, size);
+			MulVectors(_result, vector, result, size);
 			copy_array(_result, result, size); element_null(result, size);
 		}
 
