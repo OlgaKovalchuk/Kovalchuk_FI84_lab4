@@ -153,7 +153,7 @@ int main()
 		start1 = clock();
 		int* result = new int[expansion - 1];
 		element_null(result, expansion);
-		cout << revers_output(multiplicative_vector(_vector_1, _vector_2, result, expansion), expansion) << endl;
+		cout << revers_output(MulVectors(_vector_1, _vector_2, result, expansion), expansion) << endl;
 		finish1 = clock();
 		d1 = (double)(finish1 - start1) / CLOCKS_PER_SEC;
 		cout << "Время работы операции * : " << d1 << endl;
