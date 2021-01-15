@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <math.h>
 using namespace std;
 
 #define POLINOMIAL_BASIS_H
@@ -102,25 +103,59 @@ int* add_vector(int* vector_1, int* vector_2, int* result, int size)
 	return result;
 }
 
-int* long_shift_digits_to_high(int* arrey, int max, int shiftBy)
+int* long_shift_digits_to_high(int* arrey, int max, int shiftBy, string direction)
 {
-	int* arrey1 = new int[shiftBy];
+	/*cout << "Вектор, который сдвигаем:" << endl;
+	for (int i = 0; i < max; i++)
+	{
+		cout << arrey[i] << "  ";
+	}
+	cout << endl;*/
+	int* result = new int[max];
+	element_null(result, max);
+	if (shiftBy == 0)
+	{
+		for (int i = 0; i < max; i++)
+		{
+			result[i] = arrey[i];
+		}
+		return result;
+	}
+	//int* arrey1 = new int[shiftBy];
 	int j = 0;
-	for (int i = max - shiftBy; i < max; i++)
+	if (direction == "r")
 	{
-		arrey1[j] = arrey[i];
-		j++;
+		for (int i = 0; i < shiftBy; i++)
+		{
+			result[j] = arrey[max - shiftBy + i];
+			j++;
+		}
+		for (int i = shiftBy; i < max; i++)
+		{
+			result[i] = arrey[i-shiftBy];
+		}
 	}
-	for (int i = 0; i < max - shiftBy; i++)
+	else if (direction == "l")
 	{
-		arrey[(max - 1) - i] = arrey[(max - shiftBy - 1) - i];
+		cout << "Копируем символы, которые переносятся в конец:" << endl;
+		for (int i =0; i < shiftBy; i++)
+		{
+			result[max - shiftBy+j] = arrey[i];
+			cout << "result[" << max - shiftBy + j << "] = " << result[max - shiftBy + j] << endl;
+			cout << "arrey[" << i << "] = " << arrey[i] << endl;
+			j++;
+		}
+		cout << "Сдвигаем остальные символы:" << endl;
+		for (int i = 0; i < max-shiftBy; i++)
+		{
+			result[i] = arrey[max-i-1];
+			cout << "result[" << i << "] = " << result[i] << endl;
+			cout << "arrey[" << max - i - 1 << "] = " << arrey[max - i - 1] << endl;
+		}
 	}
-	for (int i = 0; i < shiftBy; i++)
-	{
-		arrey[i] = arrey1[i];
-	}
-	delete[] arrey1;
-	return arrey;
+	cout << endl << endl;
+	//delete[] arrey1;
+	return result;
 }
 
 int deg(int* vector, int size)
@@ -133,33 +168,27 @@ int deg(int* vector, int size)
 	return temp;
 }
 
-int* mod_generator(int* vector, int* generator, int* result, int size_first, int size_second)
+
+int DivPrimeNumber(int a, int prime_num)
 {
-	int* vector1 = new int[size_first];
-	element_null(vector1, size_first);
-	copy_array(vector1, vector, size_first);
-
-	int* generator1 = new int[size_first];
-	element_null(generator1, size_first);
-	copy_array(generator1, generator, size_second);
-
-	int* result1 = new int[size_first];
-	element_null(result1, size_first);
-
-	while (deg(vector1, size_first) >= deg(generator1, size_first))
+	int result;
+	if (a < 0 && -a<=prime_num)
 	{
-		int temp = deg(vector1, size_first) - deg(generator1, size_first);
-
-		long_shift_digits_to_high(generator1, size_first, temp);
-		add_vector(vector1, generator1, result1, size_first);
-		element_null(generator1, size_first);  copy_array(generator1, generator, size_second);
-		copy_array(vector1, result1, size_first);
-		element_null(result1, size_first);
+		result = prime_num + a;
 	}
-	result = copy_array(result, vector1, size_second - 1);
-	delete[] result1;
-	delete[] generator1;
-	delete[] vector1;
+	else if (a<0 && -a>prime_num)
+	{
+		int temp = (-a)/prime_num;
+		result = -a + temp * prime_num;
+	}
+	else if (a == 0)
+	{
+		result = 0;
+	}
+	else
+	{
+		result = a % prime_num;
+	}
 	return result;
 }
 
@@ -181,19 +210,15 @@ int* MulVectors(int* vector1, int* vector2, int* result, int size)
 	{
 		for (int j = 0; j < size; j++)
 		{
-			if ((2 ^ i + 2 ^ j) % p == 1)
-			{
-				matrix[i][j] = 1;
-			}
-			else if ((2 ^ i - 2 ^ j) % p == 1)
-			{
-				matrix[i][j] = 1;
-			}
-			else if ((-(2 ^ i) + 2 ^ j) % p == 1)
-			{
-				matrix[i][j] = 1;
-			}
-			else if ((-(2 ^ i) - 2 ^ j) % p == 1)
+			int a1 = pow(2, i) + pow(2, j);
+			int a2 = pow(2, i) - pow(2, j);
+			int a3 = -pow(2, i) + pow(2, j);
+			int a4 = -pow(2, i) - pow(2, j);
+			cout << "a1 = 2^" << i << " + 2^" << j << " = " << a1 << " mod "<<p<<" = "<< DivPrimeNumber(a1, p)<< endl;
+			cout << "a1 = 2^" << i << " - 2^" << j << " = " << a2 << " mod " << p << " = " << DivPrimeNumber(a2, p) << endl;
+			cout << "a1 = -2^" << i << " + 2^" << j << " = " << a3 << " mod " << p << " = " << DivPrimeNumber(a3, p) << endl;
+			cout << "a1 = -2^" << i << " - 2^" << j << " = " << a4 << " mod " << p << " = " << DivPrimeNumber(a4, p) << endl;
+			if (DivPrimeNumber(a1, p) == 1 || DivPrimeNumber(a2, p) == 1 || DivPrimeNumber(a3, p) == 1 || DivPrimeNumber(a4, p) == 1)
 			{
 				matrix[i][j] = 1;
 			}
@@ -211,21 +236,48 @@ int* MulVectors(int* vector1, int* vector2, int* result, int size)
 		cout << endl;
 	}
 	cout << endl;
-	int* result1 = new int[size];
-	element_null(result1, size);
-	for (int j = 0; j < size; j++)
+	int* result2 = new int[size];
+	element_null(result2, size);
+	for (int k = 0; k < size; k++)
 	{
+		string direction = "l";
+		int*shift_vec1 = long_shift_digits_to_high(vector1, size, k, direction);
+		int* shift_vec2 = long_shift_digits_to_high(vector2, size, k, direction);
+		cout << "Сдвинутый первый вектор:" << endl;
 		for (int i = 0; i < size; i++)
 		{
-			result1[i] = (result1[i] + result1[i] * matrix[i][j]) % 2;
+			cout << shift_vec1[i] << "  ";
 		}
+		cout << endl;
+		cout << "Сдвинутый второй вектор:" << endl;
+		for (int i = 0; i < size; i++)
+		{
+			cout << shift_vec2[i] << "  ";
+		}
+		cout << endl;
+		int* result1 = new int[size];
+		element_null(result1, size);
+		//result = long_shift_digits_to_high(vector1, size, k);
+		for (int j = 0; j < size; j++)
+		{
+			for (int i = 0; i < size; i++)
+			{
+				result1[j] = (result1[j] + shift_vec1[i] * matrix[i][j]) % 2;
+			}
+			cout << "result1[" << j << "] = " << result1[j] << endl;
+		}
+		cout << "Результат умножения вектора 1 на матрицу Лямбла0:" << endl;
+		for (int i = 0; i < size; i++)
+		{
+			cout << result1[i] << " ";
+		}
+		cout << endl;
+		for (int i = 0; i < size; i++)
+		{
+			result[k] = (result[k] + result1[i]*shift_vec2[i]) % 2;
+		}
+		cout << "result[" << k << "] = " << result[k] << endl;
 	}
-	cout << "Результат умножения вектора 1 на матрицу Лямбла0:" << endl;
-	for (int i = 0; i < size; i++)
-	{
-		cout << result1[i] << " ";
-	}
-	cout << endl;
 	/*int* result1 = new int[2 * size + 1];
 	element_null(result1, 2 * size + 1);
 	for (int i = 0; i < size; i++)
@@ -236,7 +288,7 @@ int* MulVectors(int* vector1, int* vector2, int* result, int size)
 		}
 	}
 	//mod_generator(result1, generator, result, 2 * size + 1, size + 1);*/
-	delete[] result1;
+	//delete[] result1;
 	return result;
 }
 
@@ -253,7 +305,7 @@ int* elevation_to_square(int* vector, int* result, int size)
 	return result;
 }
 
-int* elevation_to_huge_degree(int* vector, int* degree, int* generator, int* result, int size)
+int* elevation_to_huge_degree(int* vector, int* degree, int* result, int size)
 {
 	int* _result = new int[size]; 
 	element_one(_result, size);
